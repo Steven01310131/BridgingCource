@@ -7,7 +7,6 @@ def fexact(t):
 def RK2(t0,y0,h):
     n=round(10/h)
     RKerr=[]
-    y=y0
     for i in range(n):    
         k1=f(t0,y0)
         k2=f((t0+h), (y0+h*k1))
@@ -19,12 +18,11 @@ def RK2(t0,y0,h):
 
 def RK3(t0,y0,h):
     n=round(10/h)
-    y=y0
     RKerr=[]
     for i in range(n):
         k1= f(t0,y0)
         k2 = f( (t0+h/2), (y0+k1*h/2) )
-        k3 = f( (t0+h/2), (y0+2*k2*h-k1*h) )
+        k3 = f( (t0+h), (y0+2*k2*h-k1*h) )
         y= y0 + (k1+4*k2+k3)*(h/6)
         t0=t0+h
         y0=y
@@ -33,7 +31,6 @@ def RK3(t0,y0,h):
     
 def RK4(t0,y0,h):
     n=round(10/h)
-    y=y0
     RKerr=[]
     for i in range(n):
         k1=h*f(t0,y0)
