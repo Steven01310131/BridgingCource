@@ -34,20 +34,22 @@ dx=0.001
 m=1000 
 A=(np.diag(np.full(m,-2))+np.diag(np.ones(m-1),1)+np.diag(np.ones(m-1),-1))/dx**2
 err=[]
+order=[]
 for i in h:
     y0=f()
     y1=Trap(i,y0,A)
-    print(y1)
     y2=Trap(i,y1,A)
     p=BDF3(i,0,0.5,y0,y1,y2,A)
     err.append(norm(p-fexact(0.5)))
 print(err)
-fit=np.polyfit(np.log10(h),np.log10(err),1)
-print(fit)
-order=fit[0]
-print("Order of conv for BDF3="+str(order))
+for i in range(len(err)-1):
+    l=math.log2(err[i])-math.log2(err[i+1])
+    order.append(l)
+print(order)
+print("Order of conv for BDF3="+str(order[-1]))
 plt.show()
-
-# plt.show()
-# print(fexact())
+"""
+The theoretical order of convergence is 3 but i get a very low 0.4684838718894695
+So there must be an error in my code but i cant find it 
+"""
 
