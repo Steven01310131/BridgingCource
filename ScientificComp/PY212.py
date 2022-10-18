@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math 
 def f(t,y):
     return 1/(1+t**2)-2*(y**2)
 def fexact(t):
     return t/(1+t**2)
+hstep=[0.2,0.1,0.05,0.025,0.0125,0.00625]
 def RK2(t0,y0,h):
     n=round(10/h)
     RKerr=[]
@@ -14,7 +16,21 @@ def RK2(t0,y0,h):
         t0=t0+h
         y0=y
         RKerr.append((abs(y0-fexact(t0)))/fexact(t0))
-    return RKerr
+    return RKerr,y
+
+#For calculating the order of convergerance and ploting the error function for RK2
+conv=[]
+order=[]
+for i in hstep:
+    Rkerr,y=RK2(0,0,i)
+    conv.append(abs(y-fexact(10)))
+    
+for i in range(len(conv)-1):
+    l=math.log2(conv[i+1])/math.log2(conv[i])
+    order.append(l)
+print(order)
+
+
 
 def RK3(t0,y0,h):
     n=round(10/h)
@@ -51,12 +67,12 @@ hstep=[0.2,0.1,0.05,0.025,0.0125,0.00625]
 # for i in hstep:
 #     plt.
 #     plt.plot(RK2(0,0,i))
-for i in hstep:
-    plt.plot(RK2(0,0,i))
-    plt.plot(RK3(0,0,i))
-    plt.plot(RK4(0,0,i)) 
-    plt.ylabel("Error")
-    plt.show()   
+# for i in hstep:
+#     plt.plot(RK2(0,0,i))
+#     plt.plot(RK3(0,0,i))
+#     plt.plot(RK4(0,0,i)) 
+#     plt.ylabel("Error")
+#     plt.show()   
 
 
 
