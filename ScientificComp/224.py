@@ -1,7 +1,9 @@
 from cmath import exp
 import math
-from tkinter import Y
 import matplotlib.pyplot as plt
+from numpy.linalg import inv,solve,norm
+import numpy as np
+
 def fa(t,y):
     return t*math.exp(-t)-y
 def fb(t,y):
@@ -24,24 +26,33 @@ def euler(t0,y0,h,t,f):
         t0+=h
     return y
 h=[0.2,0.1,0.05,0.025,0.0125,0.00625]
-
-def errorplots(f,fe):
-    lst=[]
+def errorplots(Numerical_method,f,fe):#function to compute the relative errors and the order of convergence
+    err=[]
+    order=[]
     for i in h:
-        lst.append(abs((euler(0,1,i,10,f)-fe(10))/fe(10)))
-    print(lst)
-    plt.plot(lst)
-    plt.xlabel("step sizes h")
-    plt.ylabel("Relative error")
-    plt.show()
+        err.append(norm(Numerical_method(0,1,i,10,f)-fe(10)))
+    for i in range(len(err)-1):
+        l=math.log2(err[i])-math.log2(err[i+1])
+        order.append(l)
+    print(f"Order of convergence with the  {Numerical_method.__name__} method of the function {f.__name__}={str(order[-1])}")
+    return err
+# commands to plot the errors with euler 
+a=errorplots(euler,fa,fa_exact)
+c=errorplots(euler,fc,fc_exact)
+b=errorplots(euler,fb,fb_exact)
+fig,ax=plt.subplots(3)
+fig.suptitle('For euler method ')
+ax[0].loglog(h,a)
+ax[0].set_title("For function a")
+ax[2].set(xlabel="step sizes h")
+ax[1].loglog(h,b)
+ax[1].set_title("For function b")
+ax[2].loglog(h,c)
+ax[2].set_title("For function c")
+for i in range(3):
+    ax[i].set(ylabel="Relative error")
+plt.show()
 
-# errorplots(fa,fa_exact)
-# errorplots(fb,fb_exact)
-# errorplots(fc,fc_exact)
-# def eulerimplicit(t0,y0,h,t,f):
-#     n=round((t-t0)/h)
-#     z=y0
-#     for i in range():
 def euler_implicit(t0,y0,h,t,f):
     n=round((t-t0)/h)
     for i in range(n):
@@ -49,6 +60,21 @@ def euler_implicit(t0,y0,h,t,f):
         y0=y
         t0+=h
     return y
+a=errorplots(euler_implicit,fa,fa_exact)
+c=errorplots(euler_implicit,fc,fc_exact)
+b=errorplots(euler_implicit,fb,fb_exact)
+fig,ax=plt.subplots(3)
+fig.suptitle('For euler implicit method ')
+ax[0].loglog(h,a)
+ax[0].set_title("For function a")
+ax[2].set(xlabel="step sizes h")
+ax[1].loglog(h,b)
+ax[1].set_title("For function b")
+ax[2].loglog(h,c)
+ax[2].set_title("For function c")
+for i in range(3):
+    ax[i].set(ylabel="Relative error")
+plt.show()
 
 def trapezoid(t0,y0,h,t,f):
     n=round((t-t0)/h)
@@ -57,8 +83,22 @@ def trapezoid(t0,y0,h,t,f):
         y0=y
         t0+=h
     return y
-# print(euler_implicit(0,1,0.2,10,fa))  
-# print(fa_exact(10))     
+
+a=errorplots(trapezoid,fa,fa_exact)
+c=errorplots(trapezoid,fc,fc_exact)
+b=errorplots(trapezoid,fb,fb_exact)
+fig,ax=plt.subplots(3)
+fig.suptitle('For trapezoid method ')
+ax[0].loglog(h,a)
+ax[0].set_title("For function a")
+ax[2].set(xlabel="step sizes h")
+ax[1].loglog(h,b)
+ax[1].set_title("For function b")
+ax[2].loglog(h,c)
+ax[2].set_title("For function c")
+for i in range(3):
+    ax[i].set(ylabel="Relative error")
+plt.show()  
 
 def fbtaylor2(t,y):
     return math.cos(y)**2
@@ -73,6 +113,22 @@ def Taylor(t0,y0,h,t,f2,f3):
         y0=y
         t0+=h
     return y
+def Taylor_errorplots(Numerical_method,fe):#function to compute the relative errors and the order of convergence for the taylor
+    err=[]
+    order=[]
+    for i in h:
+        err.append(norm(Numerical_method(0,1,i,10,fbtaylor2,fbtaylor3)-fe(10)))
+    for i in range(len(err)-1):
+        l=math.log2(err[i])-math.log2(err[i+1])
+        order.append(l)
+    print(f"Order of convergence with the  {Numerical_method.__name__} method of the function  is ={str(order[-1])}")
+    return err
+a=Taylor_errorplots(Taylor,fc_exact)
+plt.title("For the Taylor method")
+plt.plot(h,a)
+plt.xlabel("Step size h")
+plt.ylabel("Error")
+plt.show()  
 
 def RK2(t0,y0,h,t,f):
     n=round((t-t0)/h)
@@ -87,7 +143,17 @@ def f4(t,y):
     return -y+t**0.1*(1.1+t)
 def f4_exact(t):
     return t**1.1
-# for j in h:
-#     print("for h=",j,)
-#     for i in range(5):
-#         print("The error at t=",i+1,"is ",abs((RK2(0,0,j,i+1,f4)-f4_exact(i+1))/f4_exact(i+1)))
+for j in h:
+    print(f"for step size h={j}")
+    for i in range(1,6):
+        print(f"The error at t={i} is error={norm(RK2(0,0,j,i,f4)-f4_exact(i))}")
+err=[]
+order=[]
+for j in h:
+    err.append(RK2(0,0,j,5,f4))
+# fit=np.polyfit(np.log10(h),np.log10(err),1)
+# order=fit[0]
+for i in range(len(err)-1):
+    l=math.log2(err[i]/err[i+1])
+    order.append(l)
+print(f"Order of convergence is ={order}")

@@ -47,7 +47,7 @@ for i in range(len(err)-1):
     order.append(l)
 print("Order of conv for BDF3="+str(order[-1]))
 """
-The theoretical order of convergence is 3 but i get a very low 0.9990665982721358
+The theoretical order of convergence is 3 but i get is very low 0.9659335139171272
 So there must be an error in my code but i cant find it 
 """
 
