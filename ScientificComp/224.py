@@ -10,13 +10,14 @@ def fb(t,y):
     return math.cos(y)**2
 def fc(t,y):
     return (t**3)/y
-
+print(fb(1,0))
 def fa_exact(t):
     return (1+0.5*t**2)*math.exp(-t)
 def fb_exact(t):
     return 1/math.tan(t)
 def fc_exact(t):
     return math.sqrt(0.5*t**4+1)
+print(fb_exact(10))
 
 def euler(t0,y0,h,t,f):
     n=round((t-t0)/h)
@@ -25,21 +26,23 @@ def euler(t0,y0,h,t,f):
         y0=y
         t0+=h
     return y
+
 h=[0.2,0.1,0.05,0.025,0.0125,0.00625]
-def errorplots(Numerical_method,f,fe):#function to compute the relative errors and the order of convergence
+def errorplots(Numerical_method,f,fe,initial):#function to compute the relative errors and the order of convergence initial is to specify the initial conditions 
     err=[]
     order=[]
     for i in h:
-        err.append(norm(Numerical_method(0,1,i,10,f)-fe(10)))
+        err.append(norm(Numerical_method(0,initial,i,10,f)-fe(10)))
     for i in range(len(err)-1):
-        l=math.log2(err[i])-math.log2(err[i+1])
+        l=math.log2(err[i]/err[i+1])/(h[i+1]/h[i])
         order.append(l)
     print(f"Order of convergence with the  {Numerical_method.__name__} method of the function {f.__name__}={str(order[-1])}")
     return err
 # commands to plot the errors with euler 
-a=errorplots(euler,fa,fa_exact)
-c=errorplots(euler,fc,fc_exact)
-b=errorplots(euler,fb,fb_exact)
+a=errorplots(euler,fa,fa_exact,1)
+b=errorplots(euler,fb,fb_exact,0)
+c=errorplots(euler,fc,fc_exact,1)
+
 fig,ax=plt.subplots(3)
 fig.suptitle('For euler method ')
 ax[0].loglog(h,a)
@@ -60,9 +63,10 @@ def euler_implicit(t0,y0,h,t,f):
         y0=y
         t0+=h
     return y
-a=errorplots(euler_implicit,fa,fa_exact)
-c=errorplots(euler_implicit,fc,fc_exact)
-b=errorplots(euler_implicit,fb,fb_exact)
+a=errorplots(euler_implicit,fa,fa_exact,1)
+b=errorplots(euler_implicit,fb,fb_exact,0)
+c=errorplots(euler_implicit,fc,fc_exact,1)
+
 fig,ax=plt.subplots(3)
 fig.suptitle('For euler implicit method ')
 ax[0].loglog(h,a)
@@ -84,9 +88,10 @@ def trapezoid(t0,y0,h,t,f):
         t0+=h
     return y
 
-a=errorplots(trapezoid,fa,fa_exact)
-c=errorplots(trapezoid,fc,fc_exact)
-b=errorplots(trapezoid,fb,fb_exact)
+a=errorplots(trapezoid,fa,fa_exact,1)
+b=errorplots(trapezoid,fb,fb_exact,0)
+c=errorplots(trapezoid,fc,fc_exact,1)
+
 fig,ax=plt.subplots(3)
 fig.suptitle('For trapezoid method ')
 ax[0].loglog(h,a)
@@ -117,15 +122,16 @@ def Taylor_errorplots(Numerical_method,fe):#function to compute the relative err
     err=[]
     order=[]
     for i in h:
-        err.append(norm(Numerical_method(0,1,i,10,fbtaylor2,fbtaylor3)-fe(10)))
+        err.append(norm(Numerical_method(0,0,i,10,fbtaylor2,fbtaylor3)-fe(10)))
     for i in range(len(err)-1):
-        l=math.log2(err[i])-math.log2(err[i+1])
+        l=math.log2(err[i]/err[i+1])/(h[i+1]/h[i])
         order.append(l)
     print(f"Order of convergence with the  {Numerical_method.__name__} method of the function  is ={str(order[-1])}")
     return err
-a=Taylor_errorplots(Taylor,fc_exact)
+a=Taylor_errorplots(Taylor,fb_exact)
+print(a)
 plt.title("For the Taylor method")
-plt.plot(h,a)
+plt.loglog(h,a)
 plt.xlabel("Step size h")
 plt.ylabel("Error")
 plt.show()  
@@ -149,11 +155,12 @@ for j in h:
         print(f"The error at t={i} is error={norm(RK2(0,0,j,i,f4)-f4_exact(i))}")
 err=[]
 order=[]
+h=[0.2,0.1,0.05,0.025,0.0125,0.00625]
 for j in h:
-    err.append(RK2(0,0,j,5,f4))
-# fit=np.polyfit(np.log10(h),np.log10(err),1)
-# order=fit[0]
+    err.append(norm(RK2(0,0,j,5,f4)-f4_exact(5)))
 for i in range(len(err)-1):
-    l=math.log2(err[i]/err[i+1])
+    print(h[i])
+    print(h[i+1])
+    l=math.log2(err[i]/err[i+1])/(h[i+1]/h[i])
     order.append(l)
 print(f"Order of convergence is ={order}")
