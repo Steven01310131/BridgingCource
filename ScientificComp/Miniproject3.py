@@ -10,14 +10,12 @@ def fb(t,y):
     return math.cos(y)**2
 def fc(t,y):
     return (t**3)/y
-print(fb(1,0))
 def fa_exact(t):
     return (1+0.5*t**2)*math.exp(-t)
 def fb_exact(t):
     return 1/math.tan(t)
 def fc_exact(t):
     return math.sqrt(0.5*t**4+1)
-print(fb_exact(10))
 
 def euler(t0,y0,h,t,f):
     n=round((t-t0)/h)
@@ -129,7 +127,6 @@ def Taylor_errorplots(Numerical_method,fe):#function to compute the relative err
     print(f"Order of convergence with the  {Numerical_method.__name__} method of the function  is ={str(order[-1])}")
     return err
 a=Taylor_errorplots(Taylor,fb_exact)
-print(a)
 plt.title("For the Taylor method")
 plt.loglog(h,a)
 plt.xlabel("Step size h")
@@ -159,8 +156,6 @@ h=[0.2,0.1,0.05,0.025,0.0125,0.00625]
 for j in h:
     err.append(norm(RK2(0,0,j,5,f4)-f4_exact(5)))
 for i in range(len(err)-1):
-    print(h[i])
-    print(h[i+1])
     l=math.log2(err[i]/err[i+1])/(h[i+1]/h[i])
     order.append(l)
 print(f"Order of convergence is ={order}")
