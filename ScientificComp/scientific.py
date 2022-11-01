@@ -133,11 +133,27 @@ Sigma = 2*np.eye(2)
 # plt.contour(x,y,fd)
 # plt.plot(X[0,N-2000:], X[1,N-2000:], color = "red",marker = "o", markersize = 3, linestyle = "")
 # plt.show()
-Hhat = np.zeros(4)
-for k in range(4):
-    N = 10**(k+3)
-    X0 = [0,0]
-    X = McMcRandWalkGen(f, X0, Sigma, N)
-    X=np.dot(X[0,:],X[1,:])
-    Hhat[k] = 1/N*np.sum(X)
-print("MCMC estimates = ",np.round(Hhat,4))
+# Hhat = np.zeros(4)
+# for k in range(4):
+#     N = 10**(k+3)
+#     X0 = [0,0]
+#     X = McMcRandWalkGen(f, X0, Sigma, N)
+#     X=np.dot(X[0,:],X[1,:])
+#     Hhat[k] = 1/N*np.sum(X)
+# print("MCMC estimates = ",np.round(Hhat,4))
+
+# 5.3
+def Diffusion(x0,h,m,s,n):
+    Y=np.zeros(n)
+    t=np.zeros(n)
+    Y[0]=x0
+    t[0]=0
+    Z=UniformGen(0,1,n)
+    for k in range(n-1):
+        Y[k+1]=Y[k]+m*Y[k]*h+s*Y[k]*math.sqrt(h)*Z[k]
+        t[k+1]=k*h
+    return Y,t
+
+y,t=Diffusion(1,0.001,1,1,200)
+plt.plot(t,y)
+plt.show()
