@@ -81,19 +81,9 @@ def betaA(a,N):
     X = U**(1/b)
     return X
 
-# plt.figure(figsize = (5,3))
-# lam, N = 0.5, 50000
-# X = ExpGen(lam,N)
-# plt.hist(X, bins = 500, histtype = "bar", color = "red", density = "true")
-# x = np.linspace(0,15,200)
-# f = lam*np.exp(-lam*x)
-# plt.plot(x,f,linestyle = "-", color = "blue")
-# plt.title("Histogram of X and the pdf f(x)")
-# plt.xlabel("X")
-# plt.ylabel("Frequency %")
-# plt.show()
 
-#Miniproject 6.1
+
+#PY programming 6.1
 N=[100,200,500,1000,5000,10000,100000,1000000]
 results=[]
 for n in N :
@@ -104,28 +94,22 @@ for n in N :
 print(results)
 
 
-# # for n in N:
-# #     U=UniformGen(0,1,n)
-# #     w=-np.log(U)
-# #     G=np.cos(w)
-# #     results.append(np.mean(G))
-# # print(results)
 
 # Metropolis Hastings
-
+# PY programming 7.1 
 c = 1/20216.335877
 f = lambda x: c*np.exp(-(x[0,0]**2*x[0,1]**2+x[0,0]**2+x[0,1]**2-8*x[0,0]-8*x[0,1])/2)
 h=lambda x: x[0,0]*x[0,1]
 Sigma = 2*np.eye(2)
 Hhat = np.zeros(4)
-for k in range(4):
-    N = 10**(k+3)
-    X0 = [0,0]
-    X = McMcRandWalkGen(f, X0, Sigma, N)
-    Hhat[k] = 1/N*np.sum(X[0,:]*X[1,:])
-print("MCMC estimates = ",np.round(Hhat,4))
+# for k in range(4):
+#     N = 10**(k+3)
+#     X0 = [0,0]
+#     X = McMcRandWalkGen(f, X0, Sigma, N)
+#     Hhat[k] = 1/N*np.sum(X[0,:]*X[1,:])
+# print("MCMC estimates = ",np.round(Hhat,4))
 
-# 5.3
+# PY programming 5.3 
 def Diffusion(x0,h,mu,sigma,n):
     Y=np.zeros(n)
     t=np.linspace(0,h*n,n)
